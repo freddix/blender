@@ -1,0 +1,39 @@
+From: "Matteo F. Vescovi" <mfv.debian@gmail.com>
+Date: Sat, 28 Apr 2012 10:50:34 +0200
+Subject: install_in_usr_lib
+
+ * Arch-specific files go to /usr/lib rather than /usr/share
+ * Make blender look for systemdir into /usr/lib instead of /usr/share
+---
+ intern/ghost/intern/GHOST_SystemPathsX11.cpp |    2 +-
+ source/creator/CMakeLists.txt                |    4 ++--
+ 2 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/intern/ghost/intern/GHOST_SystemPathsX11.cpp b/intern/ghost/intern/GHOST_SystemPathsX11.cpp
+index 6dad366..f91b645 100644
+--- a/intern/ghost/intern/GHOST_SystemPathsX11.cpp
++++ b/intern/ghost/intern/GHOST_SystemPathsX11.cpp
+@@ -47,7 +47,7 @@
+ #endif
+ 
+ #ifdef PREFIX
+-static const char *static_path= PREFIX "/share";
++static const char *static_path= PREFIX "/lib";
+ #else
+ static const char *static_path= NULL;
+ #endif
+diff --git a/source/creator/CMakeLists.txt b/source/creator/CMakeLists.txt
+index caf990f..7b61535 100644
+--- a/source/creator/CMakeLists.txt
++++ b/source/creator/CMakeLists.txt
+@@ -281,8 +281,8 @@ if(WITH_PYTHON)
+ 	endif()
+ 
+ 	install(
+-		DIRECTORY ${CMAKE_SOURCE_DIR}/release/scripts
+-		DESTINATION ${TARGETDIR_VER}
++		DIRECTORY ${CMAKE_SOURCE_DIR}/release/scripts/
++		DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/blender/scripts/
+ 		PATTERN ".svn" EXCLUDE
+ 		PATTERN "__pycache__" EXCLUDE
+ 		PATTERN "${ADDON_EXCLUDE_CONDITIONAL}" EXCLUDE
