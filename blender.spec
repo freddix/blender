@@ -88,7 +88,7 @@ rm -rf $RPM_BUILD_ROOT
 %{__make} -j1 install -C build \
 	DESTDIR=$RPM_BUILD_ROOT
 
-rm -f $RPM_BUILD_ROOT%{_datadir}/locale/{es_ES,es}
+rm -rf $RPM_BUILD_ROOT%{_datadir}/locale/es_ES
 
 %find_lang %{name}
 
