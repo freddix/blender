@@ -1,7 +1,7 @@
 Summary:	3D content creation suite
 Name:		blender
 Version:	2.63a
-Release:	3
+Release:	4
 License:	GPL v2
 Group:		X11/Applications
 Source0:	http://download.blender.org/source/%{name}-%{version}.tar.gz
@@ -33,6 +33,7 @@ BuildRequires:	python3-devel
 BuildRequires:	xorg-libX11-devel
 BuildRequires:	xz-devel
 BuildRequires:	zlib-devel
+%pyrequires_eq	python3-modules
 Requires(post,postun):	/usr/bin/gtk-update-icon-cache
 Requires(post,postun):	desktop-file-utils
 Requires(post,postun):	hicolor-icon-theme
@@ -91,6 +92,12 @@ rm -rf $RPM_BUILD_ROOT
 rm -rf $RPM_BUILD_ROOT%{_datadir}/locale/es_ES
 
 %find_lang %{name}
+
+find $RPM_BUILD_ROOT -type f -name "*.py" -print | \
+	xargs sed -i "s|/usr/bin/python|/usr/bin/python3|g"
+
+%py3_comp $RPM_BUILD_ROOT%{_prefix}/lib/blender
+%py3_ocomp $RPM_BUILD_ROOT%{_prefix}/lib/blender
 
 %clean
 rm -rf $RPM_BUILD_ROOT
