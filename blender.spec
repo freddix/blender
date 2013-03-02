@@ -1,17 +1,15 @@
 Summary:	3D content creation suite
 Name:		blender
-Version:	2.63a
-Release:	4
+Version:	2.66
+Release:	0.2
 License:	GPL v2
 Group:		X11/Applications
 Source0:	http://download.blender.org/source/%{name}-%{version}.tar.gz
-# Source0-md5:	31a60b3ce5466d965cb7e2648995e092
-Patch0:		%{name}-boost.patch
-Patch1:		%{name}-libav.patch
-Patch2:		%{name}-fhs.patch
-Patch3:		%{name}-locale.patch
-Patch4:		%{name}-path.patch
-Patch5:		%{name}-font-fixes.patch
+# Source0-md5:	159aedda89693321c5055819fa8e91cf
+Patch0:		%{name}-scripts.patch
+Patch1:		%{name}-locale.patch
+Patch2:		%{name}-path.patch
+Patch3:		%{name}-font-fixes.patch
 BuildRequires:	OpenEXR-devel
 BuildRequires:	OpenGL-devel
 BuildRequires:	SDL-devel
@@ -52,12 +50,11 @@ a standalone binary are common products of Blender use.
 
 %prep
 %setup -q
-%patch0 -p0
+%patch0 -p1
 %patch1 -p1
 %patch2 -p1
-%patch3 -p1
-%patch4 -p1
-%patch5 -p1
+# needs update
+#%patch3 -p1
 
 %build
 mkdir build
@@ -81,7 +78,8 @@ cd build
 	-DWITH_PYTHON:BOOL=ON		\
 	-DWITH_PYTHON_INSTALL:BOOL=OFF	\
 	-DWITH_PYTHON_SAFETY=ON
-%{__make} -j1
+#%{__make} -j1
+%{__make}
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -96,8 +94,8 @@ rm -rf $RPM_BUILD_ROOT%{_datadir}/locale/es_ES
 find $RPM_BUILD_ROOT -type f -name "*.py" -print | \
 	xargs sed -i "s|/usr/bin/python|/usr/bin/python3|g"
 
-%py3_comp $RPM_BUILD_ROOT%{_prefix}/lib/blender
-%py3_ocomp $RPM_BUILD_ROOT%{_prefix}/lib/blender
+%py3_comp $RPM_BUILD_ROOT%{_datadir}/blender
+%py3_ocomp $RPM_BUILD_ROOT%{_datadir}/blender
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -115,7 +113,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/blender
 %attr(755,root,root) %{_bindir}/blender-thumbnailer.py
 %attr(755,root,root) %{_bindir}/blenderplayer
-%{_prefix}/lib/blender
+%{_datadir}/blender
 %{_desktopdir}/blender.desktop
 %{_iconsdir}/hicolor/*/apps/*.png
 %{_iconsdir}/hicolor/*/apps/*.svg

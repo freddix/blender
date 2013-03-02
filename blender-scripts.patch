@@ -1,0 +1,14 @@
+diff -aurN blender-2.66.orig/source/creator/CMakeLists.txt blender-2.66/source/creator/CMakeLists.txt
+--- blender-2.66.orig/source/creator/CMakeLists.txt	2013-02-25 12:37:26.379546996 +0100
++++ blender-2.66/source/creator/CMakeLists.txt	2013-02-25 12:40:32.342958526 +0100
+@@ -280,8 +280,8 @@
+ 	endif()
+ 
+ 	install(
+-		DIRECTORY ${CMAKE_SOURCE_DIR}/release/scripts
+-		DESTINATION ${TARGETDIR_VER}
++		DIRECTORY ${CMAKE_SOURCE_DIR}/release/scripts/
++		DESTINATION ${CMAKE_INSTALL_PREFIX}/share/blender/scripts/
+ 		PATTERN ".svn" EXCLUDE
+ 		PATTERN "__pycache__" EXCLUDE
+ 		PATTERN "${ADDON_EXCLUDE_CONDITIONAL}" EXCLUDE
