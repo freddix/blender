@@ -1,7 +1,18 @@
-diff -aurN blender-2.66.orig/source/creator/CMakeLists.txt blender-2.66/source/creator/CMakeLists.txt
---- blender-2.66.orig/source/creator/CMakeLists.txt	2013-02-25 12:37:26.379546996 +0100
-+++ blender-2.66/source/creator/CMakeLists.txt	2013-02-25 12:40:32.342958526 +0100
-@@ -280,8 +280,8 @@
+From: "Matteo F. Vescovi" <mfv.debian@gmail.com>
+Date: Sat, 28 Apr 2012 10:50:34 +0200
+Subject: install_in_usr_share
+
+ * Arch-specific files go to /usr/share
+ * Make blender look for systemdir into /usr/share
+---
+ source/creator/CMakeLists.txt | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/source/creator/CMakeLists.txt b/source/creator/CMakeLists.txt
+index 8d02216..4e4cce2 100644
+--- a/source/creator/CMakeLists.txt
++++ b/source/creator/CMakeLists.txt
+@@ -280,8 +280,8 @@ if(WITH_PYTHON)
  	endif()
  
  	install(

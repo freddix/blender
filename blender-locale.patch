@@ -1,16 +1,20 @@
-diff -aurN blender-2.66.orig/source/blender/blenfont/intern/blf_lang.c blender-2.66/source/blender/blenfont/intern/blf_lang.c
---- blender-2.66.orig/source/blender/blenfont/intern/blf_lang.c	2013-02-26 23:47:21.745908683 +0100
-+++ blender-2.66/source/blender/blenfont/intern/blf_lang.c	2013-02-26 23:49:24.275246886 +0100
-@@ -78,7 +78,7 @@
- 
- static void fill_locales(void)
- {
--	char *languages_path = BLI_get_folder(BLENDER_DATAFILES, "locale");
-+	char *languages_path = BLI_get_folder(BLENDER_SYSTEM_LOCALE, NULL);
- 	LinkNode *lines = NULL, *line;
- 	char *str;
- 	int idx = 0;
-@@ -185,7 +185,7 @@
+From: Kevin Roy <kiniou@gmail.com>
+Date: Thu, 21 Feb 2013 16:17:01 +0100
+Subject: locales_directory_install
+
+Change where locales are installed.
+---
+ source/blender/blenfont/intern/blf_lang.c | 2 +-
+ source/blender/blenlib/BLI_path_util.h    | 1 +
+ source/blender/blenlib/intern/path_util.c | 3 +++
+ source/creator/CMakeLists.txt             | 4 ++--
+ 4 files changed, 7 insertions(+), 3 deletions(-)
+
+diff --git a/source/blender/blenfont/intern/blf_lang.c b/source/blender/blenfont/intern/blf_lang.c
+index 73294f1..dc0ba58 100644
+--- a/source/blender/blenfont/intern/blf_lang.c
++++ b/source/blender/blenfont/intern/blf_lang.c
+@@ -185,7 +185,7 @@ EnumPropertyItem *BLF_RNA_lang_enum_properties(void)
  void BLF_lang_init(void)
  {
  #ifdef WITH_INTERNATIONAL
@@ -19,10 +23,11 @@ diff -aurN blender-2.66.orig/source/blender/blenfont/intern/blf_lang.c blender-2
  
  	if (messagepath) {
  		bl_locale_init(messagepath, TEXT_DOMAIN_NAME);
-diff -aurN blender-2.66.orig/source/blender/blenlib/BLI_path_util.h blender-2.66/source/blender/blenlib/BLI_path_util.h
---- blender-2.66.orig/source/blender/blenlib/BLI_path_util.h	2013-02-26 23:47:21.738908435 +0100
-+++ blender-2.66/source/blender/blenlib/BLI_path_util.h	2013-02-26 23:47:36.524432165 +0100
-@@ -60,6 +60,7 @@
+diff --git a/source/blender/blenlib/BLI_path_util.h b/source/blender/blenlib/BLI_path_util.h
+index 8c51c92..ee70094 100644
+--- a/source/blender/blenlib/BLI_path_util.h
++++ b/source/blender/blenlib/BLI_path_util.h
+@@ -60,6 +60,7 @@ char *BLI_get_folder_version(const int id, const int ver, const int do_check);
  #define BLENDER_SYSTEM_DATAFILES    52
  #define BLENDER_SYSTEM_SCRIPTS      53
  #define BLENDER_SYSTEM_PYTHON       54
@@ -30,10 +35,11 @@ diff -aurN blender-2.66.orig/source/blender/blenlib/BLI_path_util.h blender-2.66
  
  /* for BLI_get_folder_version only */
  #define BLENDER_RESOURCE_PATH_USER      0
-diff -aurN blender-2.66.orig/source/blender/blenlib/intern/path_util.c blender-2.66/source/blender/blenlib/intern/path_util.c
---- blender-2.66.orig/source/blender/blenlib/intern/path_util.c	2013-02-26 23:47:21.738908435 +0100
-+++ blender-2.66/source/blender/blenlib/intern/path_util.c	2013-02-26 23:47:36.524432165 +0100
-@@ -1098,6 +1098,9 @@
+diff --git a/source/blender/blenlib/intern/path_util.c b/source/blender/blenlib/intern/path_util.c
+index 5265d86..6e31575 100644
+--- a/source/blender/blenlib/intern/path_util.c
++++ b/source/blender/blenlib/intern/path_util.c
+@@ -1098,6 +1098,9 @@ char *BLI_get_folder(int folder_id, const char *subfolder)
  			if (get_path_local(path, "python", subfolder, ver)) break;
  			if (get_path_system(path, "python", subfolder, "BLENDER_SYSTEM_PYTHON", ver)) break;
  			return NULL;
@@ -43,10 +49,11 @@ diff -aurN blender-2.66.orig/source/blender/blenlib/intern/path_util.c blender-2
  	}
  	
  	return path;
-diff -aurN blender-2.66.orig/source/creator/CMakeLists.txt blender-2.66/source/creator/CMakeLists.txt
---- blender-2.66.orig/source/creator/CMakeLists.txt	2013-02-26 23:47:21.731908187 +0100
-+++ blender-2.66/source/creator/CMakeLists.txt	2013-02-26 23:47:36.525432200 +0100
-@@ -294,9 +294,9 @@
+diff --git a/source/creator/CMakeLists.txt b/source/creator/CMakeLists.txt
+index dbfa71a..cc9045b 100644
+--- a/source/creator/CMakeLists.txt
++++ b/source/creator/CMakeLists.txt
+@@ -292,9 +292,9 @@ endif()
  if(WITH_INTERNATIONAL)
  	install(
  		DIRECTORY
@@ -54,7 +61,7 @@ diff -aurN blender-2.66.orig/source/creator/CMakeLists.txt blender-2.66/source/c
 +			${CMAKE_SOURCE_DIR}/release/datafiles/locale/
  			${CMAKE_SOURCE_DIR}/release/datafiles/fonts
 -		DESTINATION ${TARGETDIR_VER}/datafiles
-+			DESTINATION ${CMAKE_INSTALL_PREFIX}/share/locale
++		DESTINATION ${CMAKE_INSTALL_PREFIX}/share/locale
  		PATTERN ".svn" EXCLUDE
  	)
  endif()

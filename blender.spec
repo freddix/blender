@@ -1,7 +1,7 @@
 Summary:	3D content creation suite
 Name:		blender
 Version:	2.66
-Release:	0.2
+Release:	0.4
 License:	GPL v2
 Group:		X11/Applications
 Source0:	http://download.blender.org/source/%{name}-%{version}.tar.gz
@@ -10,6 +10,9 @@ Patch0:		%{name}-scripts.patch
 Patch1:		%{name}-locale.patch
 Patch2:		%{name}-path.patch
 Patch3:		%{name}-font-fixes.patch
+Patch4:		%{name}-fix-format.patch
+Patch5:		%{name}-sys-path.patch
+Patch6:		%{name}-dbgedit.patch
 BuildRequires:	OpenEXR-devel
 BuildRequires:	OpenGL-devel
 BuildRequires:	SDL-devel
@@ -53,32 +56,34 @@ a standalone binary are common products of Blender use.
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
-# needs update
-#%patch3 -p1
+%patch3 -p1
+%patch4 -p1
+%patch5 -p1
+%patch6 -p1
 
 %build
 mkdir build
 cd build
 %cmake .. \
-	-DBUILD_SHARED_LIBS=OFF		\
-	-DCMAKE_SKIP_RPATH=ON		\
-	-DPYTHON_VERSION:STRING=3.3	\
-	-DWITH_BUILTIN_GLEW=OFF		\
-	-DWITH_CODEC_FFMPEG=ON		\
-	-DWITH_CODEC_SNDFILE:BOOL=ON	\
-	-DWITH_CODEC_SNDFILE=ON		\
-	-DWITH_CYCLES=OFF		\
-	-DWITH_FFTW3=ON			\
-	-DWITH_FONTCONFIG=ON		\
-	-DWITH_IMAGE_OPENJPEG:BOOL=ON	\
-	-DWITH_INSTALL_PORTABLE=OFF	\
-	-DWITH_JACK=ON			\
-	-DWITH_MOD_OCEANSIM=ON		\
-	-DWITH_PLAYER=ON		\
-	-DWITH_PYTHON:BOOL=ON		\
-	-DWITH_PYTHON_INSTALL:BOOL=OFF	\
+	-DBUILD_SHARED_LIBS=OFF			\
+	-DCMAKE_SKIP_RPATH=ON			\
+	-DCMAKE_VERBOSE_MAKEFILE=ON		\
+	-DPYTHON_VERSION:STRING=3.3		\
+	-DWITH_BUILTIN_GLEW=OFF			\
+	-DWITH_CODEC_FFMPEG=ON			\
+	-DWITH_CODEC_SNDFILE:BOOL=ON		\
+	-DWITH_CODEC_SNDFILE=ON			\
+	-DWITH_CYCLES=OFF			\
+	-DWITH_FFTW3=ON				\
+	-DWITH_FONTCONFIG=ON			\
+	-DWITH_IMAGE_OPENJPEG:BOOL=ON		\
+	-DWITH_INSTALL_PORTABLE=OFF		\
+	-DWITH_JACK=ON				\
+	-DWITH_MOD_OCEANSIM=ON			\
+	-DWITH_PLAYER=ON			\
+	-DWITH_PYTHON:BOOL=ON			\
+	-DWITH_PYTHON_INSTALL:BOOL=OFF		\
 	-DWITH_PYTHON_SAFETY=ON
-#%{__make} -j1
 %{__make}
 
 %install

@@ -1,7 +1,19 @@
-diff -aurN blender-2.66.orig/source/creator/CMakeLists.txt blender-2.66/source/creator/CMakeLists.txt
---- blender-2.66.orig/source/creator/CMakeLists.txt	2013-02-25 12:37:26.379546996 +0100
-+++ blender-2.66/source/creator/CMakeLists.txt	2013-02-25 13:09:03.624613970 +0100
-@@ -242,7 +242,7 @@
+From: "Matteo F. Vescovi" <mfv.debian@gmail.com>
+Date: Fri, 11 Jan 2013 15:37:53 +0100
+Subject: do_not_use_version_number_in_system_path
+
+Global installation expects system patch to be
+something like /usr/share/blender/scripts/
+without version numbers.
+---
+ source/creator/CMakeLists.txt | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/source/creator/CMakeLists.txt b/source/creator/CMakeLists.txt
+index 7ea1dd3..6553ce3 100644
+--- a/source/creator/CMakeLists.txt
++++ b/source/creator/CMakeLists.txt
+@@ -240,7 +240,7 @@ if(UNIX AND NOT APPLE)
  		if(WITH_PYTHON_MODULE)
  			set(TARGETDIR_VER ${PYTHON_LIBPATH}/python${PYTHON_VERSION}/site-packages/${BLENDER_VERSION})
  		else()
