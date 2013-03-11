@@ -1,20 +1,45 @@
 From: Kevin Roy <kiniou@gmail.com>
-Date: Thu, 21 Feb 2013 16:17:01 +0100
+Date: Fri, 8 Mar 2013 10:13:24 +0100
 Subject: locales_directory_install
 
 Change where locales are installed.
+
+Contributions by:
+ Antonio Ospite <ospite@studenti.unina.it>
+
+Signed-off-by: Matteo F. Vescovi <mfv.debian@gmail.com>
 ---
- source/blender/blenfont/intern/blf_lang.c | 2 +-
- source/blender/blenlib/BLI_path_util.h    | 1 +
- source/blender/blenlib/intern/path_util.c | 3 +++
- source/creator/CMakeLists.txt             | 4 ++--
- 4 files changed, 7 insertions(+), 3 deletions(-)
+ source/blender/blenfont/intern/blf_lang.c | 10 +++++-----
+ source/blender/blenlib/BLI_path_util.h    |  1 +
+ source/blender/blenlib/intern/path_util.c |  3 +++
+ source/creator/CMakeLists.txt             |  4 ++--
+ 4 files changed, 11 insertions(+), 7 deletions(-)
 
 diff --git a/source/blender/blenfont/intern/blf_lang.c b/source/blender/blenfont/intern/blf_lang.c
-index 73294f1..dc0ba58 100644
+index 73294f1..64fe414 100644
 --- a/source/blender/blenfont/intern/blf_lang.c
 +++ b/source/blender/blenfont/intern/blf_lang.c
-@@ -185,7 +185,7 @@ EnumPropertyItem *BLF_RNA_lang_enum_properties(void)
+@@ -76,16 +76,16 @@ static void free_locales(void)
+ 	num_locales = num_locales_menu = 0;
+ }
+ 
+-static void fill_locales(void)
++static void fill_locales(char *locale_path)
+ {
+-	char *languages_path = BLI_get_folder(BLENDER_DATAFILES, "locale");
++	char *languages_path = locale_path;
+ 	LinkNode *lines = NULL, *line;
+ 	char *str;
+ 	int idx = 0;
+ 
+ 	free_locales();
+ 
+-	BLI_join_dirfile(languages_path, FILE_MAX, languages_path, "languages");
++	BLI_join_dirfile(languages_path, FILE_MAX, locale_path, "languages");
+ 	line = lines = BLI_file_read_as_lines(languages_path);
+ 
+ 	/* This whole "parsing" code is a bit weak, in that it expects strictly formated input file...
+@@ -185,11 +185,11 @@ EnumPropertyItem *BLF_RNA_lang_enum_properties(void)
  void BLF_lang_init(void)
  {
  #ifdef WITH_INTERNATIONAL
@@ -23,6 +48,11 @@ index 73294f1..dc0ba58 100644
  
  	if (messagepath) {
  		bl_locale_init(messagepath, TEXT_DOMAIN_NAME);
+-		fill_locales();
++		fill_locales(messagepath);
+ 	}
+ 	else {
+ 		printf("%s: 'locale' data path for translations not found, continuing\n", __func__);
 diff --git a/source/blender/blenlib/BLI_path_util.h b/source/blender/blenlib/BLI_path_util.h
 index 8c51c92..ee70094 100644
 --- a/source/blender/blenlib/BLI_path_util.h

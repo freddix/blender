@@ -1,18 +1,17 @@
 Summary:	3D content creation suite
 Name:		blender
-Version:	2.66
-Release:	0.4
+Version:	2.66a
+Release:	1
 License:	GPL v2
 Group:		X11/Applications
 Source0:	http://download.blender.org/source/%{name}-%{version}.tar.gz
-# Source0-md5:	159aedda89693321c5055819fa8e91cf
-Patch0:		%{name}-scripts.patch
-Patch1:		%{name}-locale.patch
-Patch2:		%{name}-path.patch
-Patch3:		%{name}-font-fixes.patch
-Patch4:		%{name}-fix-format.patch
-Patch5:		%{name}-sys-path.patch
-Patch6:		%{name}-dbgedit.patch
+# Source0-md5:	dde8211818e35b00a1c01a11efef4533
+Patch0:		%{name}-dbgedit.patch
+Patch1:		%{name}-fix-format.patch
+Patch2:		%{name}-locale.patch
+Patch3:		%{name}-no-version-nr.patch
+Patch4:		%{name}-scripts.patch
+Patch5:		%{name}-font-fixes.patch
 BuildRequires:	OpenEXR-devel
 BuildRequires:	OpenGL-devel
 BuildRequires:	SDL-devel
@@ -59,13 +58,13 @@ a standalone binary are common products of Blender use.
 %patch3 -p1
 %patch4 -p1
 %patch5 -p1
-%patch6 -p1
 
 %build
 mkdir build
 cd build
 %cmake .. \
 	-DBUILD_SHARED_LIBS=OFF			\
+	-DCMAKE_INSTALL_PREFIX=%{_prefix}	\
 	-DCMAKE_SKIP_RPATH=ON			\
 	-DCMAKE_VERBOSE_MAKEFILE=ON		\
 	-DPYTHON_VERSION:STRING=3.3		\
