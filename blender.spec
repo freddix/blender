@@ -1,7 +1,7 @@
 Summary:	3D content creation suite
 Name:		blender
 Version:	2.66a
-Release:	2
+Release:	3
 License:	GPL v2
 Group:		X11/Applications
 Source0:	http://download.blender.org/source/%{name}-%{version}.tar.gz
