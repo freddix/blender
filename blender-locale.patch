@@ -1,5 +1,5 @@
 From: Kevin Roy <kiniou@gmail.com>
-Date: Fri, 8 Mar 2013 10:13:24 +0100
+Date: Mon, 29 Jul 2013 15:21:34 +0200
 Subject: locales_directory_install
 
 Change where locales are installed.
@@ -16,35 +16,36 @@ Signed-off-by: Matteo F. Vescovi <mfv.debian@gmail.com>
  4 files changed, 11 insertions(+), 7 deletions(-)
 
 diff --git a/source/blender/blenfont/intern/blf_lang.c b/source/blender/blenfont/intern/blf_lang.c
-index 73294f1..64fe414 100644
+index 9649e5b..7f6e2d7 100644
 --- a/source/blender/blenfont/intern/blf_lang.c
 +++ b/source/blender/blenfont/intern/blf_lang.c
-@@ -76,16 +76,16 @@ static void free_locales(void)
+@@ -76,9 +76,9 @@ static void free_locales(void)
  	num_locales = num_locales_menu = 0;
  }
  
 -static void fill_locales(void)
 +static void fill_locales(char *locale_path)
  {
--	char *languages_path = BLI_get_folder(BLENDER_DATAFILES, "locale");
-+	char *languages_path = locale_path;
+-	const char * const languages_path = BLI_get_folder(BLENDER_DATAFILES, "locale");
++	const char * const languages_path = locale_path;
+ 	char languages[FILE_MAX];
  	LinkNode *lines = NULL, *line;
  	char *str;
- 	int idx = 0;
+@@ -86,7 +86,7 @@ static void fill_locales(void)
  
  	free_locales();
  
--	BLI_join_dirfile(languages_path, FILE_MAX, languages_path, "languages");
-+	BLI_join_dirfile(languages_path, FILE_MAX, locale_path, "languages");
- 	line = lines = BLI_file_read_as_lines(languages_path);
+-	BLI_join_dirfile(languages, FILE_MAX, languages_path, "languages");
++	BLI_join_dirfile(languages, FILE_MAX, locale_path, "languages");
+ 	line = lines = BLI_file_read_as_lines(languages);
  
  	/* This whole "parsing" code is a bit weak, in that it expects strictly formated input file...
-@@ -185,11 +185,11 @@ EnumPropertyItem *BLF_RNA_lang_enum_properties(void)
+@@ -186,11 +186,11 @@ EnumPropertyItem *BLF_RNA_lang_enum_properties(void)
  void BLF_lang_init(void)
  {
  #ifdef WITH_INTERNATIONAL
--	char *messagepath = BLI_get_folder(BLENDER_DATAFILES, "locale");
-+	char *messagepath = BLI_get_folder(BLENDER_SYSTEM_LOCALE, NULL);
+-	const char * const messagepath = BLI_get_folder(BLENDER_DATAFILES, "locale");
++	const char * const messagepath = BLI_get_folder(BLENDER_SYSTEM_LOCALE, NULL);
  
  	if (messagepath) {
  		bl_locale_init(messagepath, TEXT_DOMAIN_NAME);
@@ -54,10 +55,10 @@ index 73294f1..64fe414 100644
  	else {
  		printf("%s: 'locale' data path for translations not found, continuing\n", __func__);
 diff --git a/source/blender/blenlib/BLI_path_util.h b/source/blender/blenlib/BLI_path_util.h
-index 8c51c92..ee70094 100644
+index e0a34e3..1823849 100644
 --- a/source/blender/blenlib/BLI_path_util.h
 +++ b/source/blender/blenlib/BLI_path_util.h
-@@ -60,6 +60,7 @@ char *BLI_get_folder_version(const int id, const int ver, const int do_check);
+@@ -60,6 +60,7 @@ const char *BLI_get_folder_version(const int id, const int ver, const bool do_ch
  #define BLENDER_SYSTEM_DATAFILES    52
  #define BLENDER_SYSTEM_SCRIPTS      53
  #define BLENDER_SYSTEM_PYTHON       54
@@ -66,24 +67,24 @@ index 8c51c92..ee70094 100644
  /* for BLI_get_folder_version only */
  #define BLENDER_RESOURCE_PATH_USER      0
 diff --git a/source/blender/blenlib/intern/path_util.c b/source/blender/blenlib/intern/path_util.c
-index 5265d86..6e31575 100644
+index 1e76a7f..3ce53cf 100644
 --- a/source/blender/blenlib/intern/path_util.c
 +++ b/source/blender/blenlib/intern/path_util.c
-@@ -1098,6 +1098,9 @@ char *BLI_get_folder(int folder_id, const char *subfolder)
- 			if (get_path_local(path, "python", subfolder, ver)) break;
+@@ -1227,6 +1227,9 @@ const char *BLI_get_folder(int folder_id, const char *subfolder)
  			if (get_path_system(path, "python", subfolder, "BLENDER_SYSTEM_PYTHON", ver)) break;
  			return NULL;
-+
+ 
 +		case BLENDER_SYSTEM_LOCALE:
 +			BLI_strncpy(path, "/usr/share/locale", FILE_MAX); break;
++
+ 		default:
+ 			BLI_assert(0);
  	}
- 	
- 	return path;
 diff --git a/source/creator/CMakeLists.txt b/source/creator/CMakeLists.txt
-index dbfa71a..cc9045b 100644
+index 6bed8d2..4a80161 100644
 --- a/source/creator/CMakeLists.txt
 +++ b/source/creator/CMakeLists.txt
-@@ -292,9 +292,9 @@ endif()
+@@ -306,9 +306,9 @@ endif()
  if(WITH_INTERNATIONAL)
  	install(
  		DIRECTORY
