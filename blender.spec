@@ -1,11 +1,11 @@
 Summary:	3D content creation suite
 Name:		blender
-Version:	2.68a
+Version:	2.69
 Release:	1
 License:	GPL v2
 Group:		X11/Applications
 Source0:	http://download.blender.org/source/%{name}-%{version}.tar.gz
-# Source0-md5:	82bc23f7b973396d571d4d243b4ada27
+# Source0-md5:	e77f53951fdaea69631cdd8c0f42cbcb
 Patch0:		%{name}-locale.patch
 Patch1:		%{name}-no-version-nr.patch
 Patch2:		%{name}-scripts.patch
@@ -63,6 +63,7 @@ cd build
 	-DCMAKE_INSTALL_PREFIX=%{_prefix}	\
 	-DCMAKE_SKIP_RPATH=ON			\
 	-DCMAKE_VERBOSE_MAKEFILE=ON		\
+	-DFREETYPE_INCLUDE_DIRS="/usr/include/freetype2"	\
 	-DPYTHON_VERSION:STRING=3.3		\
 	-DWITH_BUILTIN_GLEW=OFF			\
 	-DWITH_CODEC_FFMPEG=ON			\
