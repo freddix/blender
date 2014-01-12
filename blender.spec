@@ -1,7 +1,7 @@
 Summary:	3D content creation suite
 Name:		blender
 Version:	2.69
-Release:	1
+Release:	2
 License:	GPL v2
 Group:		X11/Applications
 Source0:	http://download.blender.org/source/%{name}-%{version}.tar.gz
@@ -15,13 +15,13 @@ BuildRequires:	OpenGL-devel
 BuildRequires:	SDL-devel
 BuildRequires:	boost-devel
 BuildRequires:	cmake
+BuildRequires:	ffmpeg-devel
 BuildRequires:	fftw3-devel
 BuildRequires:	fontconfig-devel
 BuildRequires:	freealut-devel
 BuildRequires:	freetype-devel
 BuildRequires:	glew-devel
 BuildRequires:	jack-devel
-BuildRequires:	libav-devel
 BuildRequires:	libgomp-devel
 BuildRequires:	libpng-devel
 BuildRequires:	libsndfile-devel
