@@ -1,12 +1,10 @@
-From: Kevin Roy <kiniou@gmail.com>
-Date: Thu, 16 May 2013 10:42:38 +0200
+From: "Matteo F. Vescovi" <mfv@debian.org>
+Date: Fri, 3 Apr 2015 09:50:43 +0200
 Subject: look_for_droid_ttf_with_fontconfig
 
- * Remove bad installation of fonts directory into locales.
- * Avoid using the droid font shipped with upstream source
-   and use fontconfig to get it.
-
-Signed-off-by: Matteo F. Vescovi <mfv.debian@gmail.com>
+* Remove bad installation of fonts directory into locales.
+* Avoid using the droid font shipped with upstream source
+  and use fontconfig to get it.
 ---
  CMakeLists.txt                                   |  7 ++++
  build_files/cmake/macros.cmake                   |  3 ++
@@ -14,14 +12,14 @@ Signed-off-by: Matteo F. Vescovi <mfv.debian@gmail.com>
  source/blender/blenfont/intern/blf_translation.c | 23 +++++++++++++
  source/blender/blenlib/BLI_fileops.h             |  1 +
  source/blender/blenlib/intern/fileops.c          | 44 ++++++++++++++++++++++++
- source/creator/CMakeLists.txt                    |  1 -
- 7 files changed, 85 insertions(+), 1 deletion(-)
+ source/creator/CMakeLists.txt                    |  6 ----
+ 7 files changed, 85 insertions(+), 6 deletions(-)
 
 diff --git a/CMakeLists.txt b/CMakeLists.txt
-index b1a7830..0a58232 100644
+index b52dd05..08529c5 100644
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
-@@ -641,6 +641,13 @@ if(UNIX AND NOT APPLE)
+@@ -872,6 +872,13 @@ if(UNIX AND NOT APPLE)
  		endif()
  	endif()
  
@@ -36,12 +34,12 @@ index b1a7830..0a58232 100644
  	if(WITH_CODEC_SNDFILE)
  		find_package_wrapper(SndFile)
 diff --git a/build_files/cmake/macros.cmake b/build_files/cmake/macros.cmake
-index 854609f..9324dec 100644
+index 33c7644..73e3a86 100644
 --- a/build_files/cmake/macros.cmake
 +++ b/build_files/cmake/macros.cmake
-@@ -284,6 +284,9 @@ macro(setup_liblinks
+@@ -324,6 +324,9 @@ macro(setup_liblinks
  	if(WITH_SYSTEM_GLEW)
- 		target_link_libraries(${target} ${GLEW_LIBRARY})
+ 		target_link_libraries(${target} ${BLENDER_GLEW_LIBRARIES})
  	endif()
 +	if(WITH_FONTCONFIG)
 +		target_link_libraries(${target} ${FONTCONFIG_LIBRARIES})
@@ -50,10 +48,10 @@ index 854609f..9324dec 100644
  		target_link_libraries(${target} ${BULLET_LIBRARIES})
  	endif()
 diff --git a/source/blender/blenfont/CMakeLists.txt b/source/blender/blenfont/CMakeLists.txt
-index 2debe51..b75cf9d 100644
+index 392a9ed..deb1f3c 100644
 --- a/source/blender/blenfont/CMakeLists.txt
 +++ b/source/blender/blenfont/CMakeLists.txt
-@@ -58,6 +58,13 @@ if(WITH_INTERNATIONAL)
+@@ -66,6 +66,13 @@ if(WITH_INTERNATIONAL)
  	add_definitions(-DWITH_INTERNATIONAL)
  endif()
  
@@ -64,14 +62,14 @@ index 2debe51..b75cf9d 100644
 +	add_definitions(-DWITH_FONTCONFIG)
 +endif()
 +
- add_definitions(-DGLEW_STATIC)
+ add_definitions(${GL_DEFINITIONS})
  
  blender_add_lib(bf_blenfont "${SRC}" "${INC}" "${INC_SYS}")
 diff --git a/source/blender/blenfont/intern/blf_translation.c b/source/blender/blenfont/intern/blf_translation.c
-index 57f442f..cd21778 100644
+index 2a4a152..7fd4b5c 100644
 --- a/source/blender/blenfont/intern/blf_translation.c
 +++ b/source/blender/blenfont/intern/blf_translation.c
-@@ -47,7 +47,11 @@
+@@ -52,7 +52,11 @@
  
  #include "boost_locale_wrapper.h"
  
@@ -83,7 +81,7 @@ index 57f442f..cd21778 100644
  static unsigned char *unifont_ttf = NULL;
  static int unifont_size = 0;
  static const char unifont_mono_filename[] = "bmonofont-i18n.ttf.gz";
-@@ -59,6 +63,24 @@ unsigned char *BLF_get_unifont(int *unifont_size_r)
+@@ -64,6 +68,24 @@ unsigned char *BLF_get_unifont(int *r_unifont_size)
  {
  #ifdef WITH_INTERNATIONAL
  	if (unifont_ttf == NULL) {
@@ -105,10 +103,10 @@ index 57f442f..cd21778 100644
 +			printf("%s: 'Droid Sans Regular' font not found with fontconfig\n",__func__);
 +		}
 +#else
- 		const char * const fontpath = BLI_get_folder(BLENDER_DATAFILES, "fonts");
+ 		const char * const fontpath = BKE_appdir_folder_id(BLENDER_DATAFILES, "fonts");
  		if (fontpath) {
  			char unifont_path[1024];
-@@ -69,6 +91,7 @@ unsigned char *BLF_get_unifont(int *unifont_size_r)
+@@ -74,6 +96,7 @@ unsigned char *BLF_get_unifont(int *r_unifont_size)
  		}
  		else {
  			printf("%s: 'fonts' data path not found for international font, continuing\n", __func__);
@@ -117,22 +115,22 @@ index 57f442f..cd21778 100644
  	}
  
 diff --git a/source/blender/blenlib/BLI_fileops.h b/source/blender/blenlib/BLI_fileops.h
-index 0a6d95d..f9a66aa 100644
+index 7898a54..7db1d2e 100644
 --- a/source/blender/blenlib/BLI_fileops.h
 +++ b/source/blender/blenlib/BLI_fileops.h
-@@ -80,6 +80,7 @@ bool   BLI_file_touch(const char *file);
- 
- int    BLI_file_gzip(const char *from, const char *to);
- char  *BLI_file_ungzip_to_mem(const char *from_file, int *size_r);
+@@ -89,6 +89,7 @@ bool   BLI_is_file(const char *path) ATTR_WARN_UNUSED_RESULT ATTR_NONNULL();
+ void   BLI_dir_create_recursive(const char *dir) ATTR_NONNULL();
+ double BLI_dir_free_space(const char *dir) ATTR_WARN_UNUSED_RESULT ATTR_NONNULL();
+ char  *BLI_current_working_dir(char *dir, const size_t maxlen) ATTR_NONNULL();
 +char  *BLI_file_to_mem(const char *from_file, int *size_r);
  
- size_t BLI_file_descriptor_size(int file);
- size_t BLI_file_size(const char *file);
+ /* Filelist */
+ 
 diff --git a/source/blender/blenlib/intern/fileops.c b/source/blender/blenlib/intern/fileops.c
-index 26b9e08..f1198d5 100644
+index d6fe5e5..52e2c33 100644
 --- a/source/blender/blenlib/intern/fileops.c
 +++ b/source/blender/blenlib/intern/fileops.c
-@@ -159,6 +159,50 @@ char *BLI_file_ungzip_to_mem(const char *from_file, int *size_r)
+@@ -159,6 +159,50 @@ char *BLI_file_ungzip_to_mem(const char *from_file, int *r_size)
  	return mem;
  }
  
@@ -184,14 +182,19 @@ index 26b9e08..f1198d5 100644
   * Returns true if the file with the specified name can be written.
   * This implementation uses access(2), which makes the check according
 diff --git a/source/creator/CMakeLists.txt b/source/creator/CMakeLists.txt
-index 55e9ac5..9c060d3 100644
+index 9e8777a..2279826 100644
 --- a/source/creator/CMakeLists.txt
 +++ b/source/creator/CMakeLists.txt
-@@ -307,7 +307,6 @@ if(WITH_INTERNATIONAL)
- 	install(
- 		DIRECTORY
- 			${CMAKE_SOURCE_DIR}/release/datafiles/locale/
+@@ -324,12 +324,6 @@ endif()
+ 
+ # localization
+ if(WITH_INTERNATIONAL)
+-	install(
+-		DIRECTORY
 -			${CMAKE_SOURCE_DIR}/release/datafiles/fonts
- 		DESTINATION ${CMAKE_INSTALL_PREFIX}/share/locale
- 		PATTERN ".svn" EXCLUDE
- 	)
+-		DESTINATION ${CMAKE_INSTALL_PREFIX}/share/locale
+-	)
+-
+ 	set(_locale_dir "${CMAKE_SOURCE_DIR}/release/datafiles/locale")
+ 	set(_locale_target_dir ${CMAKE_INSTALL_PREFIX}/share/locale)
+ 

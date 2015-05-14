@@ -1,5 +1,5 @@
-From: Kevin Roy <kiniou@gmail.com>
-Date: Fri, 8 Mar 2013 10:21:26 +0100
+From: "Matteo F. Vescovi" <mfv@debian.org>
+Date: Thu, 8 Jan 2015 15:34:28 +0100
 Subject: do_not_use_version_number_in_system_path
 
 Global installation expects system path to be
@@ -8,37 +8,35 @@ without version numbers.
 
 Contributions by:
  Antonio Ospite <ospite@studenti.unina.it>
-
-Signed-off-by: Matteo F. Vescovi <mfv.debian@gmail.com>
 ---
  intern/ghost/intern/GHOST_SystemPathsX11.cpp | 3 +++
  source/creator/CMakeLists.txt                | 2 +-
  2 files changed, 4 insertions(+), 1 deletion(-)
 
 diff --git a/intern/ghost/intern/GHOST_SystemPathsX11.cpp b/intern/ghost/intern/GHOST_SystemPathsX11.cpp
-index 35bebd5..e6fd170 100644
+index e2d9733..ec0e691 100644
 --- a/intern/ghost/intern/GHOST_SystemPathsX11.cpp
 +++ b/intern/ghost/intern/GHOST_SystemPathsX11.cpp
-@@ -60,6 +60,9 @@ GHOST_SystemPathsX11::~GHOST_SystemPathsX11()
+@@ -62,6 +62,9 @@ GHOST_SystemPathsX11::~GHOST_SystemPathsX11()
  
  const GHOST_TUns8 *GHOST_SystemPathsX11::getSystemDir(int, const char *versionstr) const
  {
-+	/* XXX ignore versionstr when building the system path */
++	/* XXX On Debian ignore versionstr when building the system path */
 +	versionstr = "";
 +
  	/* no prefix assumes a portable build which only uses bundled scripts */
  	if (static_path) {
- 		static char system_path[PATH_MAX];
+ 		static string system_path = string(static_path) + "/blender/" + versionstr;
 diff --git a/source/creator/CMakeLists.txt b/source/creator/CMakeLists.txt
-index 7ea1dd3..6553ce3 100644
+index 89695c7..86970e8 100644
 --- a/source/creator/CMakeLists.txt
 +++ b/source/creator/CMakeLists.txt
-@@ -240,7 +240,7 @@ if(UNIX AND NOT APPLE)
+@@ -265,7 +265,7 @@ if(UNIX AND NOT APPLE)
  		if(WITH_PYTHON_MODULE)
  			set(TARGETDIR_VER ${PYTHON_LIBPATH}/python${PYTHON_VERSION}/site-packages/${BLENDER_VERSION})
  		else()
--			set(TARGETDIR_VER ${CMAKE_INSTALL_PREFIX}/share/blender/${BLENDER_VERSION})
-+			set(TARGETDIR_VER ${CMAKE_INSTALL_PREFIX}/share/blender)
+-			set(TARGETDIR_VER share/blender/${BLENDER_VERSION})
++			set(TARGETDIR_VER share/blender)
  		endif()
  	endif()
  

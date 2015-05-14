@@ -1,18 +1,18 @@
-From: "Matteo F. Vescovi" <mfv.debian@gmail.com>
-Date: Sat, 28 Apr 2012 10:50:34 +0200
+From: "Matteo F. Vescovi" <mfvescovi@gmail.com>
+Date: Mon, 24 Feb 2014 17:45:50 +0100
 Subject: install_in_usr_share
 
- * Arch-specific files go to /usr/share
- * Make blender look for systemdir into /usr/share
+* Arch-specific files go to /usr/share
+* Make blender look for systemdir into /usr/share
 ---
  source/creator/CMakeLists.txt | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/source/creator/CMakeLists.txt b/source/creator/CMakeLists.txt
-index 6645d36..e8bf9e9 100644
+index 80c48cf..d38cf25 100644
 --- a/source/creator/CMakeLists.txt
 +++ b/source/creator/CMakeLists.txt
-@@ -292,8 +292,8 @@ if(WITH_PYTHON)
+@@ -308,8 +308,8 @@ if(WITH_PYTHON)
  	endif()
  
  	install(
@@ -20,6 +20,6 @@ index 6645d36..e8bf9e9 100644
 -		DESTINATION ${TARGETDIR_VER}
 +		DIRECTORY ${CMAKE_SOURCE_DIR}/release/scripts/
 +		DESTINATION ${CMAKE_INSTALL_PREFIX}/share/blender/scripts/
- 		PATTERN ".svn" EXCLUDE
+ 		PATTERN ".git" EXCLUDE
  		PATTERN "__pycache__" EXCLUDE
  		PATTERN "${ADDON_EXCLUDE_CONDITIONAL}" EXCLUDE

@@ -1,11 +1,11 @@
 Summary:	3D content creation suite
 Name:		blender
-Version:	2.69
-Release:	3
+Version:	2.74
+Release:	1
 License:	GPL v2
 Group:		X11/Applications
 Source0:	http://download.blender.org/source/%{name}-%{version}.tar.gz
-# Source0-md5:	e77f53951fdaea69631cdd8c0f42cbcb
+# Source0-md5:	488151953d69d63bedd8ed59f92daf3b
 Patch0:		%{name}-locale.patch
 Patch1:		%{name}-no-version-nr.patch
 Patch2:		%{name}-scripts.patch
@@ -23,6 +23,8 @@ BuildRequires:	freetype-devel
 BuildRequires:	glew-devel
 BuildRequires:	jack-audio-connection-kit-devel
 BuildRequires:	libgomp-devel
+BuildRequires:	libopencolorio-devel
+BuildRequires:	libopenimageio-devel
 BuildRequires:	libpng-devel
 BuildRequires:	libsndfile-devel
 BuildRequires:	libtiff-devel
@@ -64,21 +66,23 @@ cd build
 	-DCMAKE_SKIP_RPATH=ON			\
 	-DCMAKE_VERBOSE_MAKEFILE=ON		\
 	-DFREETYPE_INCLUDE_DIRS="/usr/include/freetype2"	\
-	-DPYTHON_VERSION:STRING=3.3		\
+	-DPYTHON_VERSION:STRING=3.4		\
 	-DWITH_BUILTIN_GLEW=OFF			\
 	-DWITH_CODEC_FFMPEG=ON			\
-	-DWITH_CODEC_SNDFILE:BOOL=ON		\
 	-DWITH_CODEC_SNDFILE=ON			\
-	-DWITH_CYCLES=OFF			\
+	-DWITH_CODEC_SNDFILE=ON			\
+	-DWITH_CYCLES=ON			\
 	-DWITH_FFTW3=ON				\
 	-DWITH_FONTCONFIG=ON			\
-	-DWITH_IMAGE_OPENJPEG:BOOL=ON		\
+	-DWITH_GAMEENGINE=ON			\
+	-DWITH_IMAGE_OPENJPEG=ON		\
 	-DWITH_INSTALL_PORTABLE=OFF		\
 	-DWITH_JACK=ON				\
 	-DWITH_MOD_OCEANSIM=ON			\
+	-DWITH_OPENCOLORIO=ON			\
 	-DWITH_PLAYER=ON			\
-	-DWITH_PYTHON:BOOL=ON			\
-	-DWITH_PYTHON_INSTALL:BOOL=OFF		\
+	-DWITH_PYTHON=ON			\
+	-DWITH_PYTHON_INSTALL=OFF		\
 	-DWITH_PYTHON_SAFETY=ON
 %{__make}
 
@@ -118,5 +122,5 @@ rm -rf $RPM_BUILD_ROOT
 %{_desktopdir}/blender.desktop
 %{_iconsdir}/hicolor/*/apps/*.png
 %{_iconsdir}/hicolor/*/apps/*.svg
-%{_mandir}/man1/blender.1*
+#%{_mandir}/man1/blender.1*
 
